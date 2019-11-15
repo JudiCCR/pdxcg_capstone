@@ -47,6 +47,7 @@ The heart of **capstone** is a user system that allows for users to retain owner
 -comments (many to many)
 -date info
 -children (edited versions)
+#
 ---
 ### Schedule
 With **15 class days** remaining I have mapped out a set of daily goals to reach in order to deliver a finished product in a timley manner, and have included post-course goals for further development
