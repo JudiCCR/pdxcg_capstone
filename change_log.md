@@ -16,3 +16,4 @@
 -created post, post objects displayed on index.html  
 -created second dummy, post object displaying properly  
 -added *def* **nu_post** to views  
+##### day one goals reached, working user registry/login leads to user-specific homepage, new posts can be added via form
