@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{user.username}} Home</title>
+</head>
+<body>
+    <div>
+        <h1>{{user.username}}</h1>
+        <h3>posts</h3>
+        {% for post in posts %}
+        {{post.text}} <br/>
+        {% endfor %}
+    </div>
+    <h3>new post form</h3>
+    <form action="{% url 'charapp:nu_post' %}" method="post">
+        {% csrf_token %}
+        <input type="text" name="nu_post_text" placeholder="clickity-clack away">
+        <button type="submit">submit</button>
+    </form>
+</body>
+</html>
