@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{profile.username}} profile</title>
+</head>
+<body>
+    <a href="{% url 'charapp:userhome' %}">home</a>
+    <div>
+        <h3>{{profile.username}} posts</h3>
+        {% for post in profile.posts.all %}
+        <h5>title</h5>
+        {{post.text}} <br>
+        <h5>comments</h5>
+        {% for comment in post.comments.all %}
+        {{comment.text}} <br>
+        {% endfor %}
+        <form action="{% url 'charapp:comment' post.id %}" method="post">
+            {% csrf_token %}
+            <input type = "hidden" name = "profile" value = "{{profile.username}}"/>
+            <input type = "text" name = "comment_text" placeholder = "comment here"/>
+            <button type = "submit">submit comment</button>
+        </form>
+        {% endfor %}
+    </div>
+    <div>
+        <h3>user directory</h3>
+        {% for user in userlist %}
+        <a href="{% url 'charapp:profile' user.username %}">{{user}}</a> <br>
+        {% endfor %}
+    </div>
+</body>
+</html>

@@ -17,3 +17,12 @@
 -created second dummy, post object displaying properly  
 -added *def* **nu_post** to views  
 ##### day one goals reached, working user registry/login leads to user-specific homepage, new posts can be added via form
+
+### Day Two: Monday, Nov 18
+-added string method to Post model  
+-renamed charapp/index.html to charapp/userhome.html  
+-created profile view for user to see other users posts  
+-added user directory to html pages profile and userhome  
+-created model Comment  
+-created view to save form data into comment  
+

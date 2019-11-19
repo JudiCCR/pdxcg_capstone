@@ -15,7 +15,7 @@ def register_user(request):
     user = User.objects.create_user(username, email, password)
     login(request, user)
 
-    return HttpResponseRedirect(reverse('charapp:index'))
+    return HttpResponseRedirect(reverse('charapp:userhome'))
 
 def login_user(request):
     username = request.POST['username']
@@ -23,7 +23,7 @@ def login_user(request):
     user = authenticate(request, username=username, password=password)
     if user is not None: # username and password matched a user
         login(request, user)
-        return HttpResponseRedirect(reverse('charapp:index'))
+        return HttpResponseRedirect(reverse('charapp:userhome'))
     else:
         return HttpResponseRedirect(reverse('users:login_register'))
 

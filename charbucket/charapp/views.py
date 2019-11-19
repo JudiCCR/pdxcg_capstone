@@ -1,13 +1,16 @@
 from django.shortcuts import render, reverse
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Post
+from .models import Post, User, Comment
+import string
 
-def index(request):
+def userhome(request):
     posts = request.user.posts.all()
+    userlist = User.objects.all()
     context = {
         'posts':posts,
+        'userlist':userlist,
     }
-    return render(request, 'charapp/index.html', context)
+    return render(request, 'charapp/userhome.html', context)
 
 def nu_post(request):
     user = request.user
@@ -16,4 +19,22 @@ def nu_post(request):
     post = Post.objects.create(user=user, text=text)
     post.save()
 
-    return HttpResponseRedirect(reverse('charapp:index'))
+    return HttpResponseRedirect(reverse('charapp:userhome'))
+
+def profile(request, username):
+    context = {
+        'profile': User.objects.get(username = username),
+        'userlist': User.objects.all(),
+    }
+    return render(request, 'charapp/profile.html', context)
+
+def comment(request, post_id):
+    commenter = request.user
+    post = Post.objects.get(id = post_id)
+    text = request.POST['comment_text']
+    author_name = request.POST['profile']
+
+    comment = Comment.objects.create(user = commenter, post = post, text = text)
+    comment.save()
+
+    return HttpResponseRedirect(reverse('charapp:profile', args = [author_name]))
