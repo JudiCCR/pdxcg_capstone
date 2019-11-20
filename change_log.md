@@ -25,4 +25,10 @@
 -added user directory to html pages profile and userhome  
 -created model Comment  
 -created view to save form data into comment  
+##### day two had problems routing from comment view back to user profile, fixed, keep an eye on it
+
+### Day Three: Teusday, Nov 19
+-integrated Bootstrap-Vue on front end  
+-html skeleton and BS-V tags abstracted to base.html  
+
 

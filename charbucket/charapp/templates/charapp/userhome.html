@@ -1,31 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{user.username}} Home</title>
-</head>
-<body>
-    <div>
-        <h3>Posts</h3>
-        {% for post in posts %}
-        {{post.text}} <br>
-        {% endfor %}
-    </div>
-    <div>
+{% extends 'charapp/charapp_base.html' %}
+{% block content%}
+    <div class="container">
         <h3>new post</h3>
         <form action="{% url 'charapp:nu_post' %}" method="post">
             {% csrf_token %}
             <input type="text" name="nu_post_text" placeholder="text"/>
-            <button type="submit">submit</button>
+            <b-button type="submit">submit</b-button>
         </form>
     </div>
-    <div>
+    <div class="container">
         <h3>user directory</h3>
         {% for user in userlist %}
         <a href="{% url 'charapp:profile' user.username %}">{{user}}</a> <br>
         {% endfor %}
+    </div> 
+    <div class="container">
+        <h3>Posts</h3>
+        {% for post in posts %}
+        <div class="card m-3">
+            <div class="card-header">
+                Title
+            </div>
+            <div class="card-body">
+                <div class="card-text">
+                    {{post.text}}
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for comment in post.comments.all %}
+                    <li class="list-group-item">{{comment}}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endfor %}
     </div>
-</body>
-</html>
+    
+{% endblock %}
