@@ -30,5 +30,13 @@
 ### Day Three: Teusday, Nov 19
 -integrated Bootstrap-Vue on front end  
 -html skeleton and BS-V tags abstracted to base.html  
+##### day three spent researching frontent frameworks and websockets
 
+### Day Four: Wednesday, Nov 20
+-fixed layout for users/login_register.html  
+-fixed layout for charapp/userhome.html  
+-fixed layout for charapp/profile.html  
+##### day four researched bootsrap modals and began layouts
 
+### Day Five: Thursday, Nov 21
+-created app charchat  

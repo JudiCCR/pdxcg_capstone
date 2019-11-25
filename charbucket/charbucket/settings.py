@@ -53,6 +53,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'charbucket.urls'
 
+MEDIA_URL = '/uploaded_files/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploaded_files')
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

@@ -15,8 +15,10 @@ def userhome(request):
 def nu_post(request):
     user = request.user
     text = request.POST['nu_post_text']
+    title = request.POST['nu_post_title']
+    upload = request.FILES.get('nu_post_file', None)
 
-    post = Post.objects.create(user=user, text=text)
+    post = Post.objects.create(user=user, text=text, title=title, upload=upload)
     post.save()
 
     return HttpResponseRedirect(reverse('charapp:userhome'))
