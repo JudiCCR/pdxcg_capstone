@@ -11,7 +11,7 @@
                 </div>
                 <div class="card-body d-flex">
                     <div class="card-text col-sm">
-                        {{post.text}}
+                        {{post.text|safe}}
                     </div>
                     {% if post.upload %}
                     <iframe class="col-sm" src="{{post.upload.url}}" frameborder="0" allowfullscreen="True" seamless="True"></iframe>
@@ -23,18 +23,12 @@
                     </ul>
                 </div>
                 <div class="card-footer">
-                    <b-button v-b-modal.modal-1>view</b-button>
+                    <b-button href="{% url 'charapp:post_table' post.id %}">View</b-button>
                 </div>
                 <script>
 
                 </script>
             </div>
-        <form action="{% url 'charapp:comment' post.id %}" method="post">
-            {% csrf_token %}
-            <input type = "hidden" name = "profile" value = "{{profile.username}}"/>
-            <input type = "text" name = "comment_text" placeholder = "comment here"/>
-            <b-button type="submit">submit comment</b-button>
-        </form>
         {% endfor %}
     </div>
     <div class="container">
