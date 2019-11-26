@@ -1,0 +1,22 @@
+{% extends 'charapp/charapp_base.html' %}
+{% block content %}
+<script>
+    tinymce.init({selector:'#whiteboard'});
+</script>
+<div class="card m-3">
+        <div class="card-header">
+           <p>{{post.title}} - {{post.user}}</p>
+        </div>
+        <div class="card-body d-flex">
+            <textarea class="card-text col" id="whiteboard" size="lg">
+                {{post.text|safe}}
+            </textarea>
+            
+            <ul class="list-group list-group-flush">
+                {% for comment in post.comments.all %}
+                <li class="list-group-item">{{comment}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock%}

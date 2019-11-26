@@ -4,14 +4,17 @@
 tinymce.init({selector:'#nu_post_text'});
 </script>
     <div class="container">
-        <h3>new post</h3>
-        <form action="{% url 'charapp:nu_post' %}" enctype="multipart/form-data" method="post">
+        <b-button v-b-toggle.nu_post_form>New Post</b-button>
+        <b-collapse id="nu_post_form">
+            <form action="{% url 'charapp:nu_post' %}" enctype="multipart/form-data" method="post">
             {% csrf_token %}
             <input type="text" name="nu_post_title" placeholder="title"/>
             <input type="text" id="nu_post_text" name="nu_post_text" placeholder="text"/>
             <input type="file" name="nu_post_file" accept=".pdf"/>
             <b-button type="submit">submit</b-button>
-        </form>
+            </form>
+        </b-collapse>
+        
     </div>
     <div class="container">
         <h3>user directory</h3>
@@ -25,6 +28,7 @@ tinymce.init({selector:'#nu_post_text'});
         <div class="card m-3">
             <div class="card-header">
                 {{post.title}}
+                <b-button href="{% url 'charapp:post_table' post.id %}">View Post</b-button>
             </div>
             <div class="card-body d-flex">
                 <div class="card-text col-sm">

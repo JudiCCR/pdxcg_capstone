@@ -40,3 +40,8 @@ def comment(request, post_id):
     comment.save()
 
     return HttpResponseRedirect(reverse('charapp:profile', args = [author_name]))
+
+def post_table(request, post_id):
+    post = Post.objects.get(id = post_id)
+    context = {'post':post}
+    return render(request, 'charapp/post_table.html', context)
