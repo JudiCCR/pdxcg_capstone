@@ -6,7 +6,7 @@
         });
 </script>
 
-    <div class="card m-3" id="vtable">
+    <div class="card m-3">
         <div class="card-header">
             <p>{{post.title}} - {{post.user}}</p>
         </div>
@@ -27,10 +27,7 @@
                 <!-- <input id = "comment_submit" type="button" value="Send"/> -->
                 <button id="comment_submit">Send</button>
             </div>
-            <div>
-                <textarea id="test_display"></textarea>
-            </div>
-            
+
 
         </div>
     </div>
@@ -46,11 +43,11 @@
         console.log('hello')
         let data = JSON.parse(e.data);
         let message = data['message'];
-        let comment = document.createElement('li');
-        let commentText = document.createTextNode(message);
-        comment.appendChild(commentText);
-        document.querySelector('#comment_block').appendChild(comment);
-        document.querySelector('#test_display').innerText += (message + '\n')
+        let li = document.createElement('li');
+        li.innerHTML = data['user'] + ': ' + data['comment']
+        li.classList.add('list-group-item')
+        let comBlock = document.querySelector('#comment_block')
+        comBlock.appendChild(li)
     }
 
     commSocket.onclose = function(e) {
@@ -63,18 +60,18 @@
         }
     };
 
-
-    // let comment_submit = document.querySelector('#comment_submit')
-    // console.log(comment_submit)
-    
-
     comment_submit.onclick = function(e) {
-        let messageInput = document.querySelector('#comment_input');
-        let message = messageInput.value;
+        let post = {{post.id}};
+        let user = {{post.user.id}};
+        let commTextInput = document.querySelector('#comment_input');
+        let commText = commTextInput.value;
         commSocket.send(JSON.stringify({
-            'message': message
+            'type': 'comment',
+            'commText': commText,
+            'userID': user,
+            'postID': post,
         }));
-        messageInput.value = ''
+        commTextInput.value = ''
     }
 
 

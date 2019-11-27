@@ -1,4 +1,5 @@
 from channels.generic.websocket import WebsocketConsumer
+from .models import User, Comment, Post
 import json
 
 class CommConsumer(WebsocketConsumer):
@@ -11,11 +12,18 @@ class CommConsumer(WebsocketConsumer):
         pass
 
     def receive(self, text_data):
-        print(text_data)
         text_data_json = json.loads(text_data)
-        message = text_data_json['message']
-        
+        print(text_data_json)
+
+        if text_data_json['type'] == 'comment':
+            comment = text_data_json['commText']
+            user = User.objects.get(id=text_data_json['userID'])
+            post = Post.objects.get(id=text_data_json['postID'])
+            comment_object = Comment.objects.create(user=user, post=post, text=comment)
+            comment_object.save()
 
         self.send(text_data=json.dumps({
-            'message':message
+            'message':text_data_json['commText'],
+            'user':user.username,
+            'comment':comment,
         }))
