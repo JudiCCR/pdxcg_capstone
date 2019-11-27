@@ -1,4 +1,4 @@
-{% extends 'charapp/charapp_base.html' %}
+{% extends 'charbucket/base.html' %}
 {% block content %}
 
     <a href="{% url 'charapp:userhome' %}">home</a>
@@ -23,7 +23,7 @@
                     </ul>
                 </div>
                 <div class="card-footer">
-                    <b-button href="{% url 'charapp:post_table' post.id %}">View</b-button>
+                    <button href="{% url 'charapp:post_table' post.id %}">View</button>
                 </div>
                 <script>
 
