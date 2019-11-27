@@ -1,6 +1,8 @@
 from django.shortcuts import render, reverse
 from django.http import HttpResponse, HttpResponseRedirect
+from django.utils.safestring import mark_safe
 from .models import Post, User, Comment
+import json
 import string
 
 def userhome(request):
@@ -43,5 +45,6 @@ def comment(request, post_id):
 
 def post_table(request, post_id):
     post = Post.objects.get(id = post_id)
-    context = {'post':post}
-    return render(request, 'charapp/post_table.html', context)
+    return render(request, 'charapp/post_table.html', {
+        'post': post
+    })
