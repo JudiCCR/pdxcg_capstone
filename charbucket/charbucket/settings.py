@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'charapp',
     'users',
-    'tinymce',
+    'trix',
     'channels',
 ]
 

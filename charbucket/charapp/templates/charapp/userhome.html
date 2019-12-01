@@ -1,7 +1,6 @@
 {% extends 'charbucket/base.html' %}
 {% block content%}
 <script>
-tinymce.init({selector:'#nu_post_text'});
 </script>
     <div class="container">
         <button class="btn" data-toggle="collapse" data-target="#nu_post_form">New Post</button>
@@ -9,7 +8,8 @@ tinymce.init({selector:'#nu_post_text'});
             <form action="{% url 'charapp:nu_post' %}" enctype="multipart/form-data" method="post">
             {% csrf_token %}
             <input type="text" name="nu_post_title" placeholder="title"/>
-            <input type="text" id="nu_post_text" name="nu_post_text" placeholder="text"/>
+            <input type="hidden" id="nu_post_text" name="nu_post_text">
+            <trix-editor input="nu_post_text"></trix-editor>
             <input type="file" name="nu_post_file" accept=".pdf"/>
             <button type="submit">submit</button>
             </form>

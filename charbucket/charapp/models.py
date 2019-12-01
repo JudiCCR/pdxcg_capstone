@@ -1,10 +1,9 @@
 from django.db import models
-from tinymce import models as tinymce_models
 from django.contrib.auth.models import User
 
 class Post(models.Model):
     user = models.ForeignKey(User, related_name = 'posts', on_delete = models.CASCADE)
-    text = tinymce_models.HTMLField()
+    text = models.TextField()
     title = models.CharField(max_length = 50, blank=True, null=True)
     date_created = models.DateTimeField(auto_now_add = True)
     upload = models.FileField(upload_to='uploads/', blank = True, null = True)

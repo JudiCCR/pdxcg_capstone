@@ -1,17 +1,12 @@
 {% extends 'charbucket/base.html' %}
 {% block content %}
-<script>
-
-</script>
-
     <div class="card m-3">
         <div class="card-header">
             <p>{{post.title}} - {{post.user}}</p>
         </div>
         <div class="card-body d-flex">
-            <div class="card-text col" id="whiteboard">
-                    {{post.text|safe}}
-            </div>
+            <input id="whiteboardInput" type="hidden" value="{{post.text|safe}}">
+            <trix-editor class="card-text col" input="whiteboardInput" id="whiteboard"></trix-editor>
             <button class="btn btn-primary" type="button" id="subChanges">submit changes</button>
             <div>
                 <ul id="comment_block" class="list-group list-group-flush">
@@ -39,9 +34,9 @@
     );
 
     commSocket.onmessage = function(e) {
-        console.log('hello')
+        console.log('message recieved by client')
         let data = JSON.parse(e.data);
-        
+        console.log(data)
         if (data['type'] === 'comment') {
             let message = data['message'];
             let li = document.createElement('li');
@@ -52,7 +47,7 @@
         
         if (data['type'] === 'alteration') {
             let userID = data['userID'];
-            document.querySelector('#testdisplay').innherHTML = data['whiteboard']
+            document.querySelector('#testdisplay').innerHTML = data['whiteboard']
         }
     }
 

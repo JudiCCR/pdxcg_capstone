@@ -22,5 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('users.urls')),
     path('charapp/', include('charapp.urls')),
-    # path('tinymce/', include('tinymce.urls')),
+    path('trix/', include('trix.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

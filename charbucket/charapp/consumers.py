@@ -13,6 +13,7 @@ class CommConsumer(WebsocketConsumer):
 
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
+        print('message recieved by server')
         print(text_data_json)
 
         if text_data_json['type'] == 'comment':
