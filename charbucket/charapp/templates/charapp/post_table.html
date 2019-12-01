@@ -1,22 +1,94 @@
-{% extends 'charapp/charapp_base.html' %}
+{% extends 'charbucket/base.html' %}
 {% block content %}
 <script>
-    tinymce.init({selector:'#whiteboard'});
+
 </script>
-<div class="card m-3">
+
+    <div class="card m-3">
         <div class="card-header">
-           <p>{{post.title}} - {{post.user}}</p>
+            <p>{{post.title}} - {{post.user}}</p>
         </div>
         <div class="card-body d-flex">
-            <textarea class="card-text col" id="whiteboard" size="lg">
-                {{post.text|safe}}
-            </textarea>
-            
-            <ul class="list-group list-group-flush">
-                {% for comment in post.comments.all %}
-                <li class="list-group-item">{{comment}}</li>
-                {% endfor %}
-            </ul>
+            <div class="card-text col" id="whiteboard">
+                    {{post.text|safe}}
+            </div>
+            <button class="btn btn-primary" type="button" id="subChanges">submit changes</button>
+            <div>
+                <ul id="comment_block" class="list-group list-group-flush">
+                    {% for comment in post.comments.all %}
+                    <li class="list-group-item">{{comment}}</li>
+                    {% endfor %}
+                </ul>
+                <input id = "comment_input" type = "text"/>
+                <br>
+                <!-- <input id = "comment_submit" type="button" value="Send"/> -->
+                <button id="comment_submit" type="button" class="btn btn-primary">Send</button>
+            </div>
+        <div id="testdisplay" cols="30" rows="10">
+            {{post.text|safe}}
+        </div>
+
         </div>
     </div>
+
+<script type="text/javascript">
+
+    let commSocket = new WebSocket(
+        'ws://' + window.location.host + 
+        '/ws/charapp/table/{{post.id}}/'
+    );
+
+    commSocket.onmessage = function(e) {
+        console.log('hello')
+        let data = JSON.parse(e.data);
+        
+        if (data['type'] === 'comment') {
+            let message = data['message'];
+            let li = document.createElement('li');
+            li.innerHTML = data['user'] + ': ' + data['comment']
+            li.classList.add('list-group-item')
+            let comBlock = document.querySelector('#comment_block')
+            comBlock.appendChild(li)};
+        
+        if (data['type'] === 'alteration') {
+            let userID = data['userID'];
+            document.querySelector('#testdisplay').innherHTML = data['whiteboard']
+        }
+    }
+
+    commSocket.onclose = function(e) {
+        console.error('Websocket closed unexpectedly');
+    };
+
+    document.querySelector('#comment_input').onkeyup = function(e) {
+        if (e.keyCode === 13) {
+            document.querySelector('#comment_submit').click();
+        }
+    };
+
+    comment_submit.onclick = function(e) {
+        let post = {{post.id}};
+        let user = {{user.id}};
+        let commTextInput = document.querySelector('#comment_input');
+        let commText = commTextInput.value;
+        commSocket.send(JSON.stringify({
+            'type': 'comment',
+            'commText': commText,
+            'userID': user,
+            'postID': post,
+        }));
+        commTextInput.value = '';
+    }
+
+    subChanges.onclick = function(e) {
+        let whiteboard = document.querySelector('#whiteboard').innerHTML;
+        let userID = {{user.id}};
+        commSocket.send(JSON.stringify({
+            'type': 'alteration',
+            'userID': userID,
+            'whiteboard': whiteboard,
+        }));
+    };
+
+</script>
 {% endblock%}

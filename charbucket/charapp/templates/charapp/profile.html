@@ -1,9 +1,9 @@
-{% extends 'charapp/charapp_base.html' %}
+{% extends 'charbucket/base.html' %}
 {% block content %}
 
     <a href="{% url 'charapp:userhome' %}">home</a>
     <div class="container">
-        <h3>{{profile.username}} posts</h3>
+        <h3>{{profile.username}} profile</h3>
         {% for post in profile.posts.all %}
         <div class="card m-3">
                 <div class="card-header">
@@ -23,7 +23,7 @@
                     </ul>
                 </div>
                 <div class="card-footer">
-                    <b-button href="{% url 'charapp:post_table' post.id %}">View</b-button>
+                    <a type="button" class="btn" href="{% url 'charapp:post_table' post.id %}">View</a>
                 </div>
                 <script>
 
