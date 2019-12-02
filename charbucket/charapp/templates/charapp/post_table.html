@@ -1,13 +1,12 @@
 {% extends 'charbucket/base.html' %}
 {% block content %}
-    <div class="card m-3">
+    <div class="card">
         <div class="card-header">
             <p>{{post.title}} - {{post.user}}</p>
         </div>
-        <div class="card-body d-flex">
+        <div class="card-body">
             <input id="whiteboardInput" type="hidden" value="{{post.text|safe}}">
-            <trix-editor class="card-text col" input="whiteboardInput" id="whiteboard"></trix-editor>
-            <button class="btn btn-primary" type="button" id="subChanges">submit changes</button>
+            <trix-editor input="whiteboardInput" id="whiteboard" contenteditable="true"></trix-editor>
             <div>
                 <ul id="comment_block" class="list-group list-group-flush">
                     {% for comment in post.comments.all %}
@@ -19,8 +18,10 @@
                 <!-- <input id = "comment_submit" type="button" value="Send"/> -->
                 <button id="comment_submit" type="button" class="btn btn-primary">Send</button>
             </div>
-        <div id="testdisplay" cols="30" rows="10">
-            {{post.text|safe}}
+        </div>
+        <div>
+            <input type="hidden" id="testInput" value="{{post.text|safe}}">
+            <trix-editor input="testInput" id="testdisplay" contenteditable="true"></trix-editor>
         </div>
 
         </div>
@@ -32,6 +33,7 @@
         'ws://' + window.location.host + 
         '/ws/charapp/table/{{post.id}}/'
     );
+
 
     commSocket.onmessage = function(e) {
         console.log('message recieved by client')
@@ -46,20 +48,22 @@
             comBlock.appendChild(li)};
         
         if (data['type'] === 'alteration') {
+            let range = whiteboard.editor.getSelectedRange();
             let userID = data['userID'];
-            document.querySelector('#testdisplay').innerHTML = data['whiteboard']
-        }
-    }
+            document.querySelector('#testdisplay').editor.loadJSON(data['whiteboard']);
+            whiteboard.editor.setSelectedRange(range);
+        };
+    };
 
     commSocket.onclose = function(e) {
         console.error('Websocket closed unexpectedly');
     };
 
-    document.querySelector('#comment_input').onkeyup = function(e) {
+    /*document.querySelector('#comment_input').onkeyup = function(e) {
         if (e.keyCode === 13) {
             document.querySelector('#comment_submit').click();
         }
-    };
+    };*/
 
     comment_submit.onclick = function(e) {
         let post = {{post.id}};
@@ -73,17 +77,27 @@
             'postID': post,
         }));
         commTextInput.value = '';
-    }
+    };
 
-    subChanges.onclick = function(e) {
-        let whiteboard = document.querySelector('#whiteboard').innerHTML;
+    whiteboard.addEventListener('trix-change', _.debounce(function(e) {
         let userID = {{user.id}};
+        let whiteboardData = whiteboard.editor;
         commSocket.send(JSON.stringify({
             'type': 'alteration',
             'userID': userID,
-            'whiteboard': whiteboard,
+            'whiteboard': whiteboardData,
         }));
-    };
+        // let whiteboard = document.querySelector('#whiteboard').editor;
+        // let userID = {{user.id}};
+        // commSocket.send(JSON.stringify({
+        //     'type': 'alteration',
+        //     'userID': userID,
+        //     'whiteboard': whiteboard,
+        // }));
+    }, 100));
+
+
+    // whiteboard.ontrixchange = sendAlter();
 
 </script>
 {% endblock%}
