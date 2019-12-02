@@ -4,10 +4,13 @@
         <div class="card-header">
             <p>{{post.title}} - {{post.user}}</p>
         </div>
-        <div class="card-body">
-            <input id="whiteboardInput" type="hidden" value="{{post.text|safe}}">
-            <trix-editor input="whiteboardInput" id="whiteboard" contenteditable="true"></trix-editor>
-            <div>
+        <div class="card-body d-flex">
+            <div class="col">
+                <input id="whiteboardInput" type="hidden" value="{{post.text|safe}}">
+                <trix-editor input="whiteboardInput" id="whiteboard" contenteditable="true"></trix-editor>
+            </div>
+
+            <div class="col">
                 <ul id="comment_block" class="list-group list-group-flush">
                     {% for comment in post.comments.all %}
                     <li class="list-group-item">{{comment}}</li>
