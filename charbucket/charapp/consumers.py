@@ -77,4 +77,5 @@ class CommConsumer(AsyncJsonWebsocketConsumer):
     def save_comment(self, comment, user, post):
         comment_object = Comment.objects.create(user=user, post=post, text=comment)
         comment_object.save()
+
         
