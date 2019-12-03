@@ -1,39 +1,80 @@
-from channels.generic.websocket import WebsocketConsumer
+from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from .models import User, Comment, Post
+from channels.db import database_sync_to_async
 import json
 
-class CommConsumer(WebsocketConsumer):
+class CommConsumer(AsyncJsonWebsocketConsumer):
     
-    def connect(self):
-        self.accept()
+    async def connect(self):
+        self.room_name = self.scope['url_route']['kwargs']['post_id']
+        self.room_group_name = 'table_%s' % self.room_name
+        
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+
+        await self.accept()
         print('connection successful')
 
-    def disconnect(self, close_code):
-        pass
+    async def disconnect(self, close_code):
+            self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
 
-    def receive(self, text_data):
+    async def myfunc(self, event):
+        print('$'*40)
+        # print(json.dumps(event))
+        # response = {
+        #     'response':json.loads(data.get('text'))
+        # }
+        content = {
+            'type': 'websocket.send',
+            'text': json.dumps(event['text']),
+        }
+        await self.send_json(content)
+
+    async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         print('message recieved by server')
-        print(text_data_json)
+        # print(text_data_json)
 
-        if text_data_json['type'] == 'comment':
+        if text_data_json['llama'] == 'comment':
             comment = text_data_json['commText']
             user = User.objects.get(id=text_data_json['userID'])
             post = Post.objects.get(id=text_data_json['postID'])
-            comment_object = Comment.objects.create(user=user, post=post, text=comment)
-            comment_object.save()
-            self.send(text_data=json.dumps({
-                'type': 'comment',
+            await database_sync_to_async(self.save_comment)(comment, user, post)
+            data = {
+                'llama': 'comment',
                 'message':text_data_json['commText'],
                 'user':user.username,
                 'comment':comment,
-            }))
-        
-        elif text_data_json['type'] == 'alteration':
-            self.send(text_data=json.dumps({
-                'type': 'alteration',
+            }
+            event = {
+                'type': 'myfunc',
+                'text': json.dumps(data)
+            }
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                event,
+                )
+        elif text_data_json['llama'] == 'alteration':
+            data = {
+                'llama': 'alteration',
                 'userID': text_data_json['userID'],
-                'whiteboard': text_data_json['whiteboard'],
-            }))    
-        
+                'message': text_data_json['whiteboard'],
+            }
+            event = {
+                'type': 'myfunc',
+                'text': json.dumps(data),
+                }
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                event
+                )
+    
+    def save_comment(self, comment, user, post):
+        comment_object = Comment.objects.create(user=user, post=post, text=comment)
+        comment_object.save()
         

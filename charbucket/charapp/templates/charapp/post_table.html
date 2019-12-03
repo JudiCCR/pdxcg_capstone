@@ -2,6 +2,7 @@
 {% block content %}
     <div class="card">
         <div class="card-header">
+            <p>logged in as {{user.username}}</p>
             <p>{{post.title}} - {{post.user}}</p>
         </div>
         <div class="card-body d-flex">
@@ -39,21 +40,28 @@
 
 
     commSocket.onmessage = function(e) {
-        console.log('message recieved by client')
+        console.log('message recieved by client');
         let data = JSON.parse(e.data);
-        console.log(data)
-        if (data['type'] === 'comment') {
+        // console.log(data);
+        // console.log(JSON.parse(data.text))
+        // console.log(data.text)
+        // console.log(JSON.parse(JSON.parse(data.text)))
+        // data = JSON.parse(data.text)
+        data = JSON.parse(JSON.parse(data.text))
+        if (data['llama'] == 'comment') {
             let message = data['message'];
             let li = document.createElement('li');
             li.innerHTML = data['user'] + ': ' + data['comment']
             li.classList.add('list-group-item')
             let comBlock = document.querySelector('#comment_block')
-            comBlock.appendChild(li)};
+            comBlock.appendChild(li)
+        }
         
-        if (data['type'] === 'alteration') {
+        if (data['llama'] == 'alteration') {
+            console.log('close')
             let range = whiteboard.editor.getSelectedRange();
             let userID = data['userID'];
-            document.querySelector('#testdisplay').editor.loadJSON(data['whiteboard']);
+            document.querySelector('#whiteboard').editor.loadJSON(data['message']);
             whiteboard.editor.setSelectedRange(range);
         };
     };
@@ -74,7 +82,7 @@
         let commTextInput = document.querySelector('#comment_input');
         let commText = commTextInput.value;
         commSocket.send(JSON.stringify({
-            'type': 'comment',
+            'llama': 'comment',
             'commText': commText,
             'userID': user,
             'postID': post,
@@ -86,7 +94,7 @@
         let userID = {{user.id}};
         let whiteboardData = whiteboard.editor;
         commSocket.send(JSON.stringify({
-            'type': 'alteration',
+            'llama': 'alteration',
             'userID': userID,
             'whiteboard': whiteboardData,
         }));
