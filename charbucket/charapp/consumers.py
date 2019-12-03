@@ -73,9 +73,19 @@ class CommConsumer(AsyncJsonWebsocketConsumer):
                 self.room_group_name,
                 event
                 )
+        elif text_data_json['llama'] == 'saveAlter':
+            postID = text_data_json['postID']
+            whiteboard = text_data_json['whiteboard']
+            await database_sync_to_async(self.save_alteration) (whiteboard, postID)
     
     def save_comment(self, comment, user, post):
         comment_object = Comment.objects.create(user=user, post=post, text=comment)
         comment_object.save()
+    
+    def save_alteration(self, whiteboard, postID):
+        print(whiteboard)
+        post = Post.objects.get(id=postID)
+        post.text = whiteboard
+        post.save()
 
         

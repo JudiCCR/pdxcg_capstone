@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from trix.fields import TrixField
 
 class Post(models.Model):
     user = models.ForeignKey(User, related_name = 'posts', on_delete = models.CASCADE)
@@ -10,7 +11,7 @@ class Post(models.Model):
     
 
     def __str__(self):
-        return f'{self.user.username} - {self.text}'
+        return f'{self.user.username} - {self.title}'
 
 class Comment(models.Model):
     user = models.ForeignKey(User, related_name = 'comments', on_delete = models.CASCADE)

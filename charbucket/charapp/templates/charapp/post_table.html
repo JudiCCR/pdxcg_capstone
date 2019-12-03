@@ -8,7 +8,11 @@
         <div class="card-body d-flex">
             <div class="col">
                 <input id="whiteboardInput" type="hidden" value="{{post.text|safe}}">
-                <trix-toolbar id="wbtools">tools</trix-toolbar>
+                <trix-toolbar id="wbtools">
+                    <button id="wbtools-save" class="btn btn-primary">save</button>
+                    <button id="wbtools-set" class="btn btn-primary">set</button>
+                    <button id="wbtools-restore" class="btn btn-primary">restore</button>
+                </trix-toolbar>
                 <trix-editor input="whiteboardInput" toolbar="wbtools" id="whiteboard" contenteditable="true"></trix-editor>
             </div>
 
@@ -24,12 +28,6 @@
                 <button id="comment_submit" type="button" class="btn btn-primary">Send</button>
             </div>
         </div>
-        <div>
-            <input type="hidden" id="testInput" value="{{post.text|safe}}">
-            <trix-toolbar id="tdtools">tools</trix-toolbar>
-            <trix-editor input="testInput" toolbar="tdtools" id="testdisplay" contenteditable="true"></trix-editor>
-        </div>
-
         </div>
     </div>
 
@@ -103,5 +101,40 @@
             // }));
         }, 500));
         // whiteboard.ontrixchange = sendAlter();
+
+        // let restorePoint = null
+        // window.onload = function() {
+        //     whiteboard.editor.loadJSON(JSON.parse('{{post.text|safe}}'))
+        //     restorePoint = JSON.stringify(whiteboard.editor);
+        // }
+        
+        let restorePoint = null
+
+        window.onload = function() {
+            restorePoint = JSON.stringify(whiteboard.editor)
+            console.log(restorePoint)
+        }
+
+        document.querySelector('#wbtools-save').addEventListener('click', function() {
+            let whiteboardData = whiteboardInput.value;
+            restorePoint = JSON.stringify(whiteboard.editor);
+            console.log(restorePoint)
+            commSocket.send(JSON.stringify({
+                'llama': 'saveAlter',
+                'postID': {{post.id}},
+                'whiteboard': whiteboardData,
+            }))
+        });
+
+        document.querySelector('#wbtools-set').addEventListener('click', function() {
+            console.log('heard set')
+            restorePoint = JSON.stringify(whiteboard.editor);
+        });
+
+        document.querySelector('#wbtools-restore').addEventListener('click', function() {
+            console.log('heard restore')
+            whiteboard.editor.loadJSON(JSON.parse(restorePoint))
+        });
+
 </script>
 {% endblock%}
