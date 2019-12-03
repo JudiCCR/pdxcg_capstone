@@ -8,7 +8,8 @@
         <div class="card-body d-flex">
             <div class="col">
                 <input id="whiteboardInput" type="hidden" value="{{post.text|safe}}">
-                <trix-editor input="whiteboardInput" id="whiteboard" contenteditable="true"></trix-editor>
+                <trix-toolbar id="wbtools">tools</trix-toolbar>
+                <trix-editor input="whiteboardInput" toolbar="wbtools" id="whiteboard" contenteditable="true"></trix-editor>
             </div>
 
             <div class="col">
@@ -25,7 +26,8 @@
         </div>
         <div>
             <input type="hidden" id="testInput" value="{{post.text|safe}}">
-            <trix-editor input="testInput" id="testdisplay" contenteditable="true"></trix-editor>
+            <trix-toolbar id="tdtools">tools</trix-toolbar>
+            <trix-editor input="testInput" toolbar="tdtools" id="testdisplay" contenteditable="true"></trix-editor>
         </div>
 
         </div>
@@ -42,6 +44,7 @@
     commSocket.onmessage = function(e) {
         console.log('message recieved by client');
         let data = JSON.parse(e.data);
+        console.log(data)
         // console.log(data);
         // console.log(JSON.parse(data.text))
         // console.log(data.text)
@@ -58,7 +61,6 @@
         }
         
         if (data['llama'] == 'alteration') {
-            console.log('close')
             let range = whiteboard.editor.getSelectedRange();
             let userID = data['userID'];
             document.querySelector('#whiteboard').editor.loadJSON(data['message']);
@@ -105,7 +107,7 @@
         //     'userID': userID,
         //     'whiteboard': whiteboard,
         // }));
-    }, 100));
+    }, 500));
 
 
     // whiteboard.ontrixchange = sendAlter();
