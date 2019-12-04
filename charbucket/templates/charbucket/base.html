@@ -9,6 +9,12 @@
     <link href="{% static 'trix/trix.css' %}" rel="stylesheet">
     <script src="{% static 'trix/trix.js' %}"></script>
     <title></title>
+    <style>
+    .trixcon {
+      overflow-y: auto !important;
+      max-height: 30em !important;
+      max-width: inherit !important;}
+    </style>
   </head>
   <body>
     {% block content %}

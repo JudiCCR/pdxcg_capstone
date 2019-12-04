@@ -24,11 +24,7 @@ class CommConsumer(AsyncJsonWebsocketConsumer):
         )
 
     async def myfunc(self, event):
-        print('$'*40)
-        # print(json.dumps(event))
-        # response = {
-        #     'response':json.loads(data.get('text'))
-        # }
+        print('$'*40)        
         content = {
             'type': 'websocket.send',
             'text': json.dumps(event['text']),
@@ -36,8 +32,11 @@ class CommConsumer(AsyncJsonWebsocketConsumer):
         await self.send_json(content)
 
     async def receive(self, text_data):
+        # print(text_data)
+        # print(type(text_data))
         text_data_json = json.loads(text_data)
-        print('message recieved by server')
+        # print(type(text_data_json))
+        # print('message recieved by server')
         # print(text_data_json)
 
         if text_data_json['llama'] == 'comment':
@@ -49,17 +48,19 @@ class CommConsumer(AsyncJsonWebsocketConsumer):
                 'llama': 'comment',
                 'message':text_data_json['commText'],
                 'user':user.username,
+                'userID':user.id,
                 'comment':comment,
             }
             event = {
                 'type': 'myfunc',
-                'text': json.dumps(data)
+                'text': data,
             }
             await self.channel_layer.group_send(
                 self.room_group_name,
                 event,
                 )
         elif text_data_json['llama'] == 'alteration':
+            # print(text_data_json['userID'])
             data = {
                 'llama': 'alteration',
                 'userID': text_data_json['userID'],
@@ -67,8 +68,9 @@ class CommConsumer(AsyncJsonWebsocketConsumer):
             }
             event = {
                 'type': 'myfunc',
-                'text': json.dumps(data),
+                'text': data,
                 }
+            # print(type(data),'\n',data)
             await self.channel_layer.group_send(
                 self.room_group_name,
                 event
