@@ -17,7 +17,7 @@
                 <trix-editor class="trixcon" input="whiteboardInput" toolbar="wbtools" id="whiteboard" contenteditable="true"></trix-editor>
             </div>
 
-            <div class="col">
+            <div class="col comment_box">
                 <ul id="comment_block" class="list-group list-group-flush">
                     {% for comment in post.comments.all %}
                     <li class="list-group-item">{{comment}}</li>
@@ -80,20 +80,41 @@
     };
 
     let inputFlag = false;
+    let timer = 0
+    let setTimer
 
     function denyInput() {
+        console.log(inputFlag)
+        if (inputFlag === false) {
         document.querySelector('#wbtools-indicator').style.display = 'inline-block';
         whiteboard.contenteditable = 'false';
         inputFlag = true
+        if (timer < 3) {timer += 1}
         console.log('disabling input')
-        setTimeout(reverseDeny, 2000)
+        setTimer = setInterval(reverseDeny, 1000)
+        } else {
+            if (timer < 3) {timer += 1}
+        }
     }
 
+
     function reverseDeny() {
+        console.log('interval...', timer)
+        if (timer === 0) {
+        console.log('zero caught')
         document.querySelector('#wbtools-indicator').style.display = 'none';
         whiteboard.contenteditable = 'true';
         inputFlag = false
         console.log('enabling input')
+        clearTimer()
+        } else {
+            timer -= 1
+        }
+    }
+    
+    function clearTimer() {
+        console.log('clearing interval');
+        clearInterval(setTimer);
     }
 
     comment_submit.onclick = function(e) {
@@ -130,7 +151,7 @@
         //     'userID': userID,
         //     'whiteboard': whiteboard,
         // }));
-    }, 100));
+    }, 300));
     
     // whiteboard.ontrixchange = sendAlter();
 
