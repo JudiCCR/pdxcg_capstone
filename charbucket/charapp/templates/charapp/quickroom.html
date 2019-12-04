@@ -49,9 +49,10 @@
         console.log(data)
 
         if (data['llama'] == 'qComment') {
+            console.log(data['user'])
             let message = data['message'];
             let li = document.createElement('li');
-            li.innerHTML = data['user'] + ': ' + data['comment']
+            li.innerHTML = data['userID'] + ': ' + data['comment']
             li.classList.add('list-group-item')
             let comBlock = document.querySelector('#comment_block')
             comBlock.appendChild(li)
