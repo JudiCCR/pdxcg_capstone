@@ -10,6 +10,7 @@ django = "*"
 channels = "*"
 django-trix = "*"
 channels-redis = "*"
+daphne = "*"
 
 [requires]
 python_version = "3.7"
