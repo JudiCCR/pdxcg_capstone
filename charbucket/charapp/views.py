@@ -4,6 +4,7 @@ from django.utils.safestring import mark_safe
 from .models import Post, User, Comment
 import json
 import string
+import random
 
 def userhome(request):
     posts = request.user.posts.all()
@@ -53,3 +54,13 @@ def post_table(request, post_id):
         'user': user,
         'post': post,
     })
+
+def quickstart(request, room_key):
+    user = ''.join([random.choice(string.ascii_letters) for i in range(8)])
+    context = {
+        'user': user,
+        'roomkey': room_key, 
+    }
+    return render(request, 'charapp/quickroom.html', context)
+    
+    

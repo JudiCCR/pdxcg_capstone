@@ -1,6 +1,14 @@
 {% extends 'charbucket/base.html' %}
 {% block content %}
 <div class="container card min-vh-100 d-flex flex-col justify-content-center">
+
+  <div class="row justify-content-center">
+    <h3>Quickstart</h3>
+  </div>
+  <div class="row justify-content-center pb-5">
+    <input type="text" name="quick-key-input" id="quick-key-input" placeholder="type or paste room key: press enter">
+    <button class="btn btn-primary" id="enter-new-room">new room</button>
+  </div>
   <div class="row justify-content-center">
     <h3>Login</h3>
   </div>
@@ -12,11 +20,11 @@
       <button type="submit">Login</button>
     </form>
   </div>
-  <div class="row justify-content-center pt-5">
+  <div class="row justify-content-center">
   <h3>Register</h3>
   </div>
-  <div class="row justify-content-center">
-    <form action="{% url 'users:register_user' %}" method="post">
+  <div class="row justify-content-center pb-5">
+    <form action="{% url 'users:register_user'  %}" method="post">
       {% csrf_token %}
       <input type="text" name="username" placeholder="username" required/>
       <input type="email" name="email" placeholder="email" required/>
@@ -27,4 +35,24 @@
 
 <!-- style="display:flex;flex-direction:column;justify-content:center" -->
 </div>
+<script type="text/javascript">
+
+document.querySelector('#quick-key-input').addEventListener('keydown', function(e) {
+  let key = document.querySelector('#quick-key-input').value
+  if (e.keyCode == 13) {
+    window.location.pathname = 'charapp/quickroom/' + key +'/'
+    }
+  }
+);
+
+
+document.querySelector('#enter-new-room').addEventListener('click', function() {
+  newKey = [];
+  for (i = 0; i<10; i++) {newKey.push(_.random(10))};
+  newKey = newKey.join('');
+  newKey
+  window.location.pathname = 'charapp/quickroom/' + newKey + '/';
+});
+
+</script>
 {% endblock %}

@@ -8,4 +8,5 @@ urlpatterns = [
     path('profile/<str:username>/', views.profile, name='profile'),
     path('comment/<int:post_id>/', views.comment, name='comment'),
     path('table/<int:post_id>/', views.post_table, name='post_table'),
+    path('quickroom/<str:room_key>/', views.quickstart, name='quickstart'),
 ]

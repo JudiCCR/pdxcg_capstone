@@ -1,45 +1,40 @@
 {% extends 'charbucket/base.html' %}
 {% block content %}
+<div>
     <div class="card">
-        <div class="card-header">
-            <p>logged in as {{user.username}}</p>
-            <p>{{post.title}} - {{post.user}}</p>
-        </div>
-        <div class="card-body d-flex">
-            <div class="col">
-                <input id="whiteboardInput" type="hidden" value="{{post.text|safe}}">
-                <trix-toolbar id="wbtools">
-                    {% if post.user == user %}
-                    <button id="wbtools-save" class="btn btn-primary">save</button>
-                    <button id="wbtools-set" class="btn btn-primary">set</button>
-                    <button id="wbtools-restore" class="btn btn-primary">restore</button>
-                    {% endif %}
-                    <div class="spinner-grow text-primary" id="wbtools-indicator" style="display:none" role="alert"></div>
-                    <p class="wbtools-indicator-el" id="wbtools-indicator-label" style="display:none"></p>
-                </trix-toolbar>
-                <trix-editor class="trixcon" input="whiteboardInput" toolbar="wbtools" id="whiteboard" contenteditable="true"></trix-editor>
+            <div class="card-header">
+                <p>room key = {{roomkey}}</p>
+                <p>userID = {{user}}</p>
             </div>
-
-            <div class="col comment_box">
-                <ul id="comment_block" class="list-group list-group-flush">
-                    {% for comment in post.comments.all %}
-                    <li class="list-group-item">{{comment}}</li>
-                    {% endfor %}
-                </ul>
-                <input id = "comment_input" type = "text"/>
-                <br>
-                <!-- <input id = "comment_submit" type="button" value="Send"/> -->
-                <button id="comment_submit" type="button" class="btn btn-primary">Send</button>
+            <div class="card-body d-flex">
+                <div class="col">
+                    <input id="whiteboardInput" type="hidden" value="{{post.text|safe}}">
+                    <trix-toolbar id="wbtools">
+                        <button id="wbtools-set" class="btn btn-primary">set</button>
+                        <button id="wbtools-restore" class="btn btn-primary">restore</button>
+                        <div class="spinner-grow text-primary wbtools-indicator-el" id="wbtools-indicator" style="display:none" role="alert"></div>
+                        <p class="wbtools-indicator-el" id="wbtools-indicator-label" style="display:none"></p>
+                    </trix-toolbar>
+                    <trix-editor class="trixcon" input="whiteboardInput" toolbar="wbtools" id="whiteboard" contenteditable="true"></trix-editor>
+                </div>
+    
+                <div class="col comment_box">
+                    <ul id="comment_block" class="list-group list-group-flush"></ul>
+                    <input id = "comment_input" type = "text"/>
+                    <br>
+                    <!-- <input id = "comment_submit" type="button" value="Send"/> -->
+                    <button id="comment_submit" type="button" class="btn btn-primary">Send</button>
+                </div>
+            </div>
             </div>
         </div>
-        </div>
-    </div>
-
+        
+</div>
 <script type="text/javascript">
 
     let commSocket = new WebSocket(
         'ws://' + window.location.host + 
-        '/ws/charapp/table/{{post.id}}/'
+        '/ws/charapp/quickroom/{{roomkey}}/'
     );
 
     commSocket.onmessage = function(e) {
@@ -53,7 +48,7 @@
         data = JSON.parse(data.text)
         console.log(data)
 
-        if (data['llama'] == 'comment') {
+        if (data['llama'] == 'qComment') {
             let message = data['message'];
             let li = document.createElement('li');
             li.innerHTML = data['user'] + ': ' + data['comment']
@@ -62,11 +57,11 @@
             comBlock.appendChild(li)
         }
         
-        if (data['llama'] == 'alteration') {
+        if (data['llama'] == 'qAlteration') {
             
-            if (data['userID'] != {{user.id}}) {
+            if (data['userID'] != '{{user}}') {
                 console.log('setting editor')
-                denyInput(data['user'])
+                denyInput(data['userID'])
                 let range = whiteboard.editor.getSelectedRange();
                 let userID = data['userID'];
                 document.querySelector('#whiteboard').editor.loadJSON(data['message']);
@@ -91,7 +86,7 @@
         if (inputFlag === false) {
         document.querySelector('#wbtools-indicator').style.display = 'inline-block';
         if (document.querySelector('#wbtools-indicator-label').style.display = 'inline-block') {console.log('i dont know why this works but ok')}
-        document.querySelector('#wbtools-indicator-label').innerText = user + ' is typing'        
+        document.querySelector('#wbtools-indicator-label').innerText = user + ' is typing'
         whiteboard.contenteditable = 'false';
         inputFlag = true
         if (timer < 3) {timer += 1}
@@ -124,15 +119,13 @@
     }
 
     comment_submit.onclick = function(e) {
-        let post = {{post.id}};
-        let user = {{user.id}};
+        let user = '{{user}}';
         let commTextInput = document.querySelector('#comment_input');
         let commText = commTextInput.value;
         commSocket.send(JSON.stringify({
-            'llama': 'comment',
+            'llama': 'qComment',
             'commText': commText,
             'userID': user,
-            'postID': post,
         }));
         commTextInput.value = '';
     };
@@ -143,13 +136,11 @@
             return;
         }
         console.log('sending')
-        let userID = {{user.id}};
-        let user = '{{user.username}}';
+        let userID = '{{user}}';
         let whiteboardData = whiteboard.editor;
         commSocket.send(JSON.stringify({
-            'llama': 'alteration',
+            'llama': 'qAlteration',
             'userID': userID,
-            'user': user,
             'whiteboard': whiteboardData,
         }));
         // let whiteboard = document.querySelector('#whiteboard').editor;
@@ -176,31 +167,15 @@
         console.log(restorePoint)
     }
 
-    if (document.querySelector('#wbtools-save') !== null) {
-        document.querySelector('#wbtools-save').addEventListener('click', function() {
-            let whiteboardData = whiteboardInput.value;
-            restorePoint = JSON.stringify(whiteboard.editor);
-            console.log(restorePoint)
-            commSocket.send(JSON.stringify({
-                'llama': 'saveAlter',
-                'postID': {{post.id}},
-                'whiteboard': whiteboardData,
-            }))
-        });
-    }
-    if (document.querySelector('#wbtools-set') !== null) {
-        document.querySelector('#wbtools-set').addEventListener('click', function() {
-            console.log('heard set')
-            restorePoint = JSON.stringify(whiteboard.editor);
-        });
-    }
+    document.querySelector('#wbtools-set').addEventListener('click', function() {
+        console.log('heard set')
+        restorePoint = JSON.stringify(whiteboard.editor);
+    });
 
-    if (document.querySelector('#wbtools-restore') !== null) {
-        document.querySelector('#wbtools-restore').addEventListener('click', function() {
-            console.log('heard restore')
-            whiteboard.editor.loadJSON(JSON.parse(restorePoint))
-        });
-    }
+    document.querySelector('#wbtools-restore').addEventListener('click', function() {
+        console.log('heard restore')
+        whiteboard.editor.loadJSON(JSON.parse(restorePoint))
+    });
 
 </script>
 {% endblock%}
