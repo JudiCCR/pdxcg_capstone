@@ -22,9 +22,8 @@ def nu_post(request):
         print(text)
     else: print('broke')
     title = request.POST['nu_post_title']
-    upload = request.FILES.get('nu_post_file', None)
 
-    post = Post.objects.create(user=user, text=text, title=title, upload=upload)
+    post = Post.objects.create(user=user, text=text, title=title)
     post.save()
 
     return HttpResponseRedirect(reverse('charapp:userhome'))
