@@ -10,9 +10,9 @@
                 <input id="whiteboardInput" type="hidden" value="{{post.text|safe}}">
                 <trix-toolbar id="wbtools">
                     {% if post.user == user %}
-                    <button id="wbtools-save" class="btn btn-primary">save</button>
-                    <button id="wbtools-set" class="btn btn-primary">set</button>
-                    <button id="wbtools-restore" class="btn btn-primary">restore</button>
+                    <button id="wbtools-save" class="btn btn-secondary">save</button>
+                    <button id="wbtools-set" class="btn btn-secondary">set</button>
+                    <button id="wbtools-restore" class="btn btn-secondary">restore</button>
                     {% endif %}
                     <div class="spinner-grow text-primary" id="wbtools-indicator" style="display:none" role="alert"></div>
                     <p class="wbtools-indicator-el" id="wbtools-indicator-label" style="display:none"></p>
@@ -29,7 +29,7 @@
                 <input id = "comment_input" type = "text"/>
                 <br>
                 <!-- <input id = "comment_submit" type="button" value="Send"/> -->
-                <button id="comment_submit" type="button" class="btn btn-primary">Send</button>
+                <button id="comment_submit" type="button" class="btn btn-secondary">Send</button>
             </div>
         </div>
         </div>

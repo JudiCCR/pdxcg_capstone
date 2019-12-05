@@ -1,7 +1,8 @@
 {% extends 'charbucket/base.html' %}
 {% block content %}
-<div>
-    <div class="card">
+<div class="container">
+    <div class="row">
+        <div class="card w-100">
             <div class="card-header">
                 <p>room key = {{roomkey}}</p>
                 <p>userID = {{user}}</p>
@@ -10,8 +11,8 @@
                 <div class="col">
                     <input id="whiteboardInput" type="hidden" value="{{post.text|safe}}">
                     <trix-toolbar id="wbtools">
-                        <button id="wbtools-set" class="btn btn-primary">set</button>
-                        <button id="wbtools-restore" class="btn btn-primary">restore</button>
+                        <button id="wbtools-set" class="btn btn-secondary">set</button>
+                        <button id="wbtools-restore" class="btn btn-secondary">restore</button>
                         <div class="spinner-grow text-primary wbtools-indicator-el" id="wbtools-indicator" style="display:none" role="alert"></div>
                         <p class="wbtools-indicator-el" id="wbtools-indicator-label" style="display:none"></p>
                     </trix-toolbar>
@@ -22,13 +23,12 @@
                     <ul id="comment_block" class="list-group list-group-flush"></ul>
                     <input id = "comment_input" type = "text"/>
                     <br>
-                    <!-- <input id = "comment_submit" type="button" value="Send"/> -->
-                    <button id="comment_submit" type="button" class="btn btn-primary">Send</button>
+                    <button id="comment_submit" type="button" class="btn btn-secondary">Send</button>
                 </div>
             </div>
             </div>
         </div>
-        
+    </div>
 </div>
 <script type="text/javascript">
 
@@ -37,14 +37,17 @@
         '/ws/charapp/quickroom/{{roomkey}}/'
     );
 
+    let wbtIndicator = document.querySelector('#wbtools-indicator')
+    let wbtLabel = document.querySelector('#wbtools-indicator-label')
+    let wbtSet = document.querySelector('#wbtools-set')
+    let wbtRestore = document.querySelector('#wbtools-restore')
+    let whiteboard = document.querySelector('#whiteboard')
+    let comBlock = document.querySelector('#comment_block')
+    let comInput = document.querySelector('#comment_input')
+
     commSocket.onmessage = function(e) {
         console.log('message received by client');
         let data = JSON.parse(e.data);
-        // console.log(data);
-        // console.log(JSON.parse(data.text))
-        // console.log(data.text)
-        // console.log(JSON.parse(JSON.parse(data.text)))
-        // data = JSON.parse(data.text)
         data = JSON.parse(data.text)
         console.log(data)
 
@@ -54,7 +57,6 @@
             let li = document.createElement('li');
             li.innerHTML = data['userID'] + ': ' + data['comment']
             li.classList.add('list-group-item')
-            let comBlock = document.querySelector('#comment_block')
             comBlock.appendChild(li)
         }
         
@@ -65,10 +67,9 @@
                 denyInput(data['userID'])
                 let range = whiteboard.editor.getSelectedRange();
                 let userID = data['userID'];
-                document.querySelector('#whiteboard').editor.loadJSON(data['message']);
+                whiteboard.editor.loadJSON(data['message']);
                 whiteboard.editor.setSelectedRange(range);
             } else {console.log('same origin')};
-            // indicator.style.display = 'none'
         };
 
 
@@ -85,9 +86,9 @@
     function denyInput(user) {
         console.log(inputFlag)
         if (inputFlag === false) {
-        document.querySelector('#wbtools-indicator').style.display = 'inline-block';
-        if (document.querySelector('#wbtools-indicator-label').style.display = 'inline-block') {console.log('i dont know why this works but ok')}
-        document.querySelector('#wbtools-indicator-label').innerText = user + ' is typing'
+        wbtIndicator.style.display = 'inline-block';
+        wbtLabel.style.display = 'inline-block';
+        wbtLabel.innerText = user + ' is typing'
         whiteboard.contenteditable = 'false';
         inputFlag = true
         if (timer < 3) {timer += 1}
@@ -103,8 +104,8 @@
         console.log('interval...', timer)
         if (timer === 0) {
         console.log('zero caught')
-        document.querySelector('#wbtools-indicator').style.display = 'none';
-        document.querySelector('#wbtools-indicator-label').style.display = 'none';
+        wbtIndicator.style.display = 'none';
+        wbtLabel.style.display = 'none';
         whiteboard.contenteditable = 'true';
         inputFlag = false
         console.log('enabling input')
@@ -122,7 +123,7 @@
     comment_submit.onclick = function(e) {
         let user = '{{user}}';
         let commTextInput = document.querySelector('#comment_input');
-        let commText = commTextInput.value;
+        let commText = comInput.value;
         commSocket.send(JSON.stringify({
             'llama': 'qComment',
             'commText': commText,
@@ -144,22 +145,7 @@
             'userID': userID,
             'whiteboard': whiteboardData,
         }));
-        // let whiteboard = document.querySelector('#whiteboard').editor;
-        // let userID = {{user.id}};
-        // commSocket.send(JSON.stringify({
-        //     'type': 'alteration',
-        //     'userID': userID,
-        //     'whiteboard': whiteboard,
-        // }));
     }, 300));
-    
-    // whiteboard.ontrixchange = sendAlter();
-
-    // let restorePoint = null
-    // window.onload = function() {
-    //     whiteboard.editor.loadJSON(JSON.parse('{{post.text|safe}}'))
-    //     restorePoint = JSON.stringify(whiteboard.editor);
-    // }
     
     let restorePoint = null
 
@@ -168,12 +154,12 @@
         console.log(restorePoint)
     }
 
-    document.querySelector('#wbtools-set').addEventListener('click', function() {
+    wbtSet.addEventListener('click', function() {
         console.log('heard set')
         restorePoint = JSON.stringify(whiteboard.editor);
     });
 
-    document.querySelector('#wbtools-restore').addEventListener('click', function() {
+    wbtRestore.addEventListener('click', function() {
         console.log('heard restore')
         whiteboard.editor.loadJSON(JSON.parse(restorePoint))
     });

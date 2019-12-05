@@ -30,11 +30,87 @@
       max-width: inherit !important;
       overflow-y: auto;
     }
+    .theme-material {
+      background-color: #e8eff1;
+      color: #1a1a1c;
+    }
+    .header-material {
+      background-color: #43b0f1;
+      color: #1a1a1c;
+    }
+    .theme-nightmode {
+      background-color: #1a1a1c;
+      color: #e8eff1;
+    }
+    .header-nightmode {
+      background-color: #0c0c0d;
+      color: #e8eff1;
+    }
+    .theme-lemmonchiffon {
+      background-color: lemonchiffon;
+      color: #2a0412;
+    }
+    .theme-lemmonchiffon > * {
+      background-color: lemonchiffon;
+      color: #2a0412;
+    }
+    .header-lemmonchiffon {
+      background-color: #daf7a6;
+      color: #2626f2;
+    }
     </style>
   </head>
-  <body>
+  <body id="bodyTag" class="theme-material">
+    <header id="headerTag" class="container header-material">
+      <div class="row justify-content-between align-items-center">
+        <div class="col-4">
+            <h2>cuttingrooms</h2>
+            <p>a virtual writerspace</p>
+        </div>
+        <div class="col-4">
+            <a type="button" class="btn btn-secondary" href="{% url 'charapp:userhome' %}">home</a>
+        </div>
+      </div>
+      <!-- <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+            choose theme
+          </button>
+        <div class="dropdown-menu" id="modeselect">
+          <div class="dropdown-item" name="material" id="material-select">material</div>
+          <div class="dropdown-item" name="nightmode" id="nightmode-select">nightmode</div>
+          <div class="dropdown-item" name="lemonchiffon" id="lemonchiffon-select">lemmonchiffon</div>
+        </div>
+      </div> -->
+    </header>
     {% block content %}
     {% endblock %}
+    <!-- <script>
+      let bodyTag = document.querySelector('#bodyTag')
+      let modeselect = document.querySelector('.dropdown-item')
+      let headerTag = document.querySelector('#headerTag')
+      modeselect.addEventListener('click', modeSwap(modeselect.value))
+      function modeSwap(val) {
+        if (val == 'material') {
+          bodyTag.className = ''
+          bodyTag.classList.add('theme-material')
+          headerTag.className = ''
+          headerTag.classList.add('header-material') 
+        } else if (val == 'nightmode') {
+          bodyTag.className = ''
+          bodyTag.classList.add('theme-nightmode')
+          headerTag.className = ''
+          headerTag.classList.add('header-nightmode')
+        } else if (val == 'lemmonchiffon') {
+          bodyTag.className = ''
+          bodyTag.classList.add('theme-lemmonchiffon')
+          headerTag.className = ''
+          headerTag.classList.add('header-lemmonchiffon')
+        } else {
+          console.log(val)
+        }
+        
+      } -->
+    </script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>

@@ -4,5 +4,7 @@
 			"path": "/home/boss/Desktop/pdxcg_capstone"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"python.pythonPath": "/home/boss/.local/share/virtualenvs/pdxcg_capstone-FgFy_72R/bin/python"
+	}
 }

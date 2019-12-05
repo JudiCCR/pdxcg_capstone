@@ -7,7 +7,7 @@
   </div>
   <div class="row justify-content-center pb-5">
     <input type="text" name="quick-key-input" id="quick-key-input" placeholder="type or paste room key: press enter">
-    <button class="btn btn-primary" id="enter-new-room">new room</button>
+    <button class="btn btn-secondary" id="enter-new-room">new room</button>
   </div>
   <div class="row justify-content-center">
     <h3>Login</h3>
@@ -17,7 +17,7 @@
       {% csrf_token %}
       <input type="text" name="username" placeholder="username" required/>
       <input type="password" name="password" placeholder="password" required/>
-      <button type="submit">Login</button>
+      <button type="submit" class="btn btn-secondary">Login</button>
     </form>
   </div>
   <div class="row justify-content-center">
@@ -29,7 +29,7 @@
       <input type="text" name="username" placeholder="username" required/>
       <input type="email" name="email" placeholder="email" required/>
       <input type="password" name="password" placeholder="password" required/>
-      <button type="submit">Register</button>
+      <button type="submit" class="btn btn-secondary">Register</button>
     </form>
   </div>
 
